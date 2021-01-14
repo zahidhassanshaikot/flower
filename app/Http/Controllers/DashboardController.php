@@ -92,6 +92,27 @@ class DashboardController extends Controller
 
         return \redirect()->back()->with('success','Successfully updated menu.');
     }
+    public function diseaseStatusChange($id){
+
+        $disease=Disease::FindOrFail($id);
+        if($disease->status==0){
+            $disease->status=1;
+        }else{
+            $disease->status=0;
+        }
+        $disease->save();
+
+        return \redirect()->back()->with('success','Successfully updated menu.');
+    }
+    
+    public function treatmentDelete($id){
+
+        $treatment=Treatment::FindOrFail($id);
+
+        $treatment->delete();
+
+        return \redirect()->back()->with('success','Successfully delete.');
+    }
     public function deleteMenu($id){
 
         $menu=Menu::FindOrFail($id);
@@ -99,6 +120,16 @@ class DashboardController extends Controller
             unlink($menu->image);
         endif; 
         $menu->delete();
+
+        return \redirect()->back()->with('success','Successfully delete.');
+    }
+    public function diseaseDelete($id){
+
+        $disease=Disease::FindOrFail($id);
+        if (File::exists($disease->image)) :
+            unlink($disease->image);
+        endif; 
+        $disease->delete();
 
         return \redirect()->back()->with('success','Successfully delete.');
     }
@@ -144,6 +175,29 @@ class DashboardController extends Controller
         $disease->save();
         return \redirect()->back()->with('success','Successfully Added.');
 
+    }
+    public function treatmentByDisease($disease_id){
+
+        $treatments=Treatment::where('disease_id',$disease_id)->get();
+
+        return view('back-end.treatmentsByDiseases',compact('treatments','disease_id'));
+    }
+    public function saveNewTreatment(Request $request){
+
+
+        Validator::make($request->all(), [
+            'disease_id' => 'required',
+        ])->validate();
+
+        $treatments = new Treatment();
+        $treatments->amount = $request->amount;
+        $treatments->disease_id = $request->disease_id;
+        $treatments->fertilizer = $request->fertilizer;
+        $treatments->pesticides = $request->pesticides;
+        $treatments->description = $request->description;
+        $treatments->save();
+
+       return \redirect()->back()->with('success','Successfully Added.');
     }
     
 }

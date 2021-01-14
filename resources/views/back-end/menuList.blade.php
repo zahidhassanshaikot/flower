@@ -116,6 +116,9 @@
                                                                         </button>
                                                                         <ul class="dropdown-menu options-dropdown">
                                                                             <li>
+                                                                                <a href="{{ route('disease-by-menu',['id'=>$menu->id]) }}"><i class="fa fa-trash option-icon"></i>Disease</a>
+                                                                            </li>
+                                                                            <li>
                                                                                 <a href="{{ route('edit-menu',['id'=>$menu->id]) }}"><i class="fa fa-trash option-icon"></i>Edit</a>
                                                                             </li>
                                                                             <li>

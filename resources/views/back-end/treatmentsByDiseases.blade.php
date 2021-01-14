@@ -36,41 +36,42 @@
                                     </div>
                                     <!-- Main Content section start -->
                                     <div class="col-12 col-lg-5">
-                                        {!!  Form::open(['route'=>'save-new-disease','method' => 'post','enctype'=>'multipart/form-data']) !!} 
+                                        {!!  Form::open(['route'=>'save-new-treatment','method' => 'post','enctype'=>'multipart/form-data']) !!} 
                                             <div class="add-new-page  bg-white p-20 m-b-20">
                                                 <div class="block-header">
-                                                    <h4>Add Disease</h4>
+                                                    <h4>Add Treatments</h4>
                                                 </div>
 
                                                 <div class="col-sm-12">
                                                     <div class="form-group">
-                                                        <label for="name" class="col-form-label">{{ __('Name') }}</label>
-                                                        <input id="name" name="name" type="text" class="form-control" required>
-                                                        <input name="menu_id" value="{{ $menu_id }}" type="hidden" class="form-control" required>
+                                                        <label for="amount" class="col-form-label">{{ __('Amount') }}</label>
+                                                        <input id="amount" name="amount" type="text" class="form-control" required>
+                                                        <input name="disease_id" value="{{ $disease_id }}" type="hidden" class="form-control" required>
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-12">
                                                     <div class="form-group">
-                                                        <label for="description" class="col-form-label">{{ __('Type') }}</label>
-                                                        <select class="form-control" name="type">
-                                                            <option value="3">Common</option>
-                                                            <option value="2">Balconies</option>
-                                                            <option value="1">Garden</option>
-                                                            
-                                                        </select>
+                                                        <label for="fertilizer" class="col-form-label">{{ __('Fertilizer') }}</label>
+                                                        <textarea id="fertilizer" name="fertilizer" type="text" class="form-control"></textarea>
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-12">
                                                     <div class="form-group">
-                                                        <label for="image" class="col-form-label">{{ __('Image') }}</label>
-                                                        <input id="image" name="image" type="file" class="form-control">
+                                                        <label for="pesticides" class="col-form-label">{{ __('Pesticides') }}</label>
+                                                        <textarea id="pesticides" name="pesticides" type="text" class="form-control"></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-12">
+                                                    <div class="form-group">
+                                                        <label for="description" class="col-form-label">{{ __('Description') }}</label>
+                                                        <textarea id="description" name="description" type="text" class="form-control"></textarea>
                                                     </div>
                                                 </div>
                                                 
                                                 <div class="row">
                                                     <div class="col-12 m-t-20">
                                                         <div class="form-group form-float form-group-sm text-right">
-                                                            <button type="submit" name="btnsubmit" class="btn btn-primary pull-right"><i class="m-r-10 mdi mdi-plus"></i>Add disease</button>
+                                                            <button type="submit" name="btnsubmit" class="btn btn-primary pull-right"><i class="m-r-10 mdi mdi-plus"></i>Add</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -97,45 +98,41 @@
                                                             <table id="example4" class="table table-striped table-bordered" style="width:100%">
                                                                 <thead>
                                                                     <tr>
-                                                                        <th>Image</th>
-                                                                        <th>Name</th>
-                                                                        <th>Status</th>
-                                                                        <th>Type</th>
+                                                                        <th>Amount</th>
+                                                                        <th>Fertilizer</th>
+                                                                        <th>Pesticides</th>
+                                                                        <th>Description</th>
                                                                         <th>Options </th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
-                                                                    @foreach ($diseases as $disease)
-                                                            <tr role="row" class="odd" id="row_{{ $disease->id }}">
+                                                                    @foreach ($treatments as $treatment)
+                                                            <tr role="row" class="odd" id="row_{{ $treatment->id }}">
+                                                                
                                                                 <td>
-                                                                    @if($disease->image != null)
-                                                                        <img src=" {{ asset($disease->image) }} " style="height: 64px;width: 64px" alt="user" class="img-responsive ">
-                                                                    @else
-                                                                        <img src="{{ asset('default-image/default.jpg') }}" style="height: 64px;width: 64px" alt="user" class="img-responsive">
-                                                                    @endif
+                                                                    {{ $treatment->amount }}
                                                                 </td>
                                                                 <td>
-                                                                    <a href="{{ route('treatment-by-disease',['id'=>$disease->id]) }}">{{ $disease->name }}</a>
+                                                                    {{ $treatment->fertilizer }}
                                                                 </td>
-                                                                <td> @if($disease->status==1) Active @else Inactive @endif</td>
-                                                                <td> @if($disease->type==1) Garden @elseif($disease->type==1) Balconies @else Common @endif</td>
+                                                                <td>
+                                                                    {{ $treatment->pesticides }}
+                                                                </td>
+                                                                <td>
+                                                                    {{ $treatment->description }}
+                                                                </td>
+
                                                                 <td>
                                                                     <div class="dropdown">
-                                                                        <button class="btn bg-primary dropdown-toggle btn-select-option" type="button" data-toggle="dropdown">...
+                                                                        <button class="btn bg-primary dropdown-toggle btn-select-option" type="button" data-toggle="dropdown">Options
                                                                             <span class="caret"></span>
                                                                         </button>
                                                                         <ul class="dropdown-menu options-dropdown">
-                                                                            <li>
-                                                                                <a href="{{ route('treatment-by-disease',['id'=>$disease->id]) }}"><i class="fa fa-trash option-icon"></i>Treatment</a>
-                                                                            </li>
                                                                             {{-- <li>
-                                                                                <a href="{{ route('edit-menu',['id'=>$disease->id]) }}"><i class="fa fa-trash option-icon"></i>Edit</a>
+                                                                                <a href="{{ route('edit-menu',['id'=>$treatment->id]) }}"><i class="fa fa-trash option-icon"></i>Edit</a>
                                                                             </li> --}}
                                                                             <li>
-                                                                                <a href="{{ route('disease-delete',['id'=>$disease->id]) }}"><i class="fa fa-trash option-icon"></i>Delete</a>
-                                                                            </li>
-                                                                            <li>
-                                                                                <a href="{{ route('disease-status-change',['id'=>$disease->id]) }}"><i class="fa fa-trash option-icon"></i>Status Change</a>
+                                                                                <a href="{{ route('treatment-delete',['id'=>$treatment->id]) }}"><i class="fa fa-trash option-icon"></i>Delete</a>
                                                                             </li>
                                                                         </ul>
                                                                     </div>
