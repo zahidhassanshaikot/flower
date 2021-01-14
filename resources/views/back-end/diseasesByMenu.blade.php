@@ -36,22 +36,28 @@
                                     </div>
                                     <!-- Main Content section start -->
                                     <div class="col-12 col-lg-5">
-                                        {!!  Form::open(['route'=>'save-new-menu','method' => 'post','enctype'=>'multipart/form-data']) !!} 
+                                        {!!  Form::open(['route'=>'save-new-disease','method' => 'post','enctype'=>'multipart/form-data']) !!} 
                                             <div class="add-new-page  bg-white p-20 m-b-20">
                                                 <div class="block-header">
-                                                    <h4>Add menu</h4>
+                                                    <h4>Add Disease</h4>
                                                 </div>
 
                                                 <div class="col-sm-12">
                                                     <div class="form-group">
                                                         <label for="name" class="col-form-label">{{ __('Name') }}</label>
                                                         <input id="name" name="name" type="text" class="form-control" required>
+                                                        <input name="menu_id" value="{{ $menu_id }}" type="hidden" class="form-control" required>
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-12">
                                                     <div class="form-group">
-                                                        <label for="description" class="col-form-label">{{ __('Description') }}</label>
-                                                        <input id="description" name="description" type="text" class="form-control">
+                                                        <label for="description" class="col-form-label">{{ __('Type') }}</label>
+                                                        <select class="form-control" name="type">
+                                                            <option value="3">Common</option>
+                                                            <option value="2">Balconies</option>
+                                                            <option value="1">Garden</option>
+                                                            
+                                                        </select>
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-12">
@@ -64,7 +70,7 @@
                                                 <div class="row">
                                                     <div class="col-12 m-t-20">
                                                         <div class="form-group form-float form-group-sm text-right">
-                                                            <button type="submit" name="btnsubmit" class="btn btn-primary pull-right"><i class="m-r-10 mdi mdi-plus"></i>Add Menu</button>
+                                                            <button type="submit" name="btnsubmit" class="btn btn-primary pull-right"><i class="m-r-10 mdi mdi-plus"></i>Add disease</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -83,7 +89,7 @@
                                             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                                                 <div class="card">
                                                     <div class="card-header">
-                                                        <h5 class="mb-0">Menu List </h5>
+                                                        <h5 class="mb-0">Disease List </h5>
                                                         
                                                     </div>
                                                     <div class="card-body">
@@ -94,21 +100,23 @@
                                                                         <th>Image</th>
                                                                         <th>Name</th>
                                                                         <th>Status</th>
+                                                                        <th>Type</th>
                                                                         <th>Options </th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
-                                                                    @foreach ($menuList as $menu)
-                                                            <tr role="row" class="odd" id="row_{{ $menu->id }}">
+                                                                    @foreach ($diseases as $disease)
+                                                            <tr role="row" class="odd" id="row_{{ $disease->id }}">
                                                                 <td>
-                                                                    @if($menu->image != null)
-                                                                        <img src=" {{ asset($menu->image) }} " style="height: 64px;width: 64px" alt="user" class="img-responsive ">
+                                                                    @if($disease->image != null)
+                                                                        <img src=" {{ asset($disease->image) }} " style="height: 64px;width: 64px" alt="user" class="img-responsive ">
                                                                     @else
                                                                         <img src="{{ asset('default-image/default.jpg') }}" style="height: 64px;width: 64px" alt="user" class="img-responsive">
                                                                     @endif
                                                                 </td>
-                                                                <td><a href="{{ route('disease-by-menu',['id'=>$menu->id]) }}">{{ $menu->name }}</a> </td>
-                                                                <td> @if($menu->status==1) Active @else Inactive @endif</td>
+                                                                <td>{{ $disease->name }} </td>
+                                                                <td> @if($disease->status==1) Active @else Inactive @endif</td>
+                                                                <td> @if($disease->type==1) Garden @elseif($disease->type==1) Balconies @else Common @endif</td>
                                                                 <td>
                                                                     <div class="dropdown">
                                                                         <button class="btn bg-primary dropdown-toggle btn-select-option" type="button" data-toggle="dropdown">...
@@ -116,13 +124,13 @@
                                                                         </button>
                                                                         <ul class="dropdown-menu options-dropdown">
                                                                             <li>
-                                                                                <a href="{{ route('edit-menu',['id'=>$menu->id]) }}"><i class="fa fa-trash option-icon"></i>Edit</a>
+                                                                                <a href="{{ route('edit-menu',['id'=>$disease->id]) }}"><i class="fa fa-trash option-icon"></i>Edit</a>
                                                                             </li>
                                                                             <li>
-                                                                                <a href="{{ route('menu-delete',['id'=>$menu->id]) }}"><i class="fa fa-trash option-icon"></i>Delete</a>
+                                                                                <a href="{{ route('menu-delete',['id'=>$disease->id]) }}"><i class="fa fa-trash option-icon"></i>Delete</a>
                                                                             </li>
                                                                             <li>
-                                                                                <a href="{{ route('status-change',['id'=>$menu->id]) }}"><i class="fa fa-trash option-icon"></i>Status Change</a>
+                                                                                <a href="{{ route('status-change',['id'=>$disease->id]) }}"><i class="fa fa-trash option-icon"></i>Status Change</a>
                                                                             </li>
                                                                         </ul>
                                                                     </div>

@@ -202,8 +202,9 @@ class ApiController extends Controller
                     $menu['image']                   = asset('default-image/default.jpg');
                 }
                 $menu['error']                       = false;
+                $menuList[]=$menu;
             }
-            $menuList[]=$menu;
+            
         }
         
 

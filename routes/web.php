@@ -32,5 +32,8 @@ Route::group(
         Route::get('/menu/delete/{id}', 'DashboardController@deleteMenu')->name('menu-delete')->middleware('auth');
         Route::get('/user-list', 'UserController@userList')->name('user-list')->middleware('auth');
         Route::post('/save-new-menu', 'DashboardController@saveNewMenu')->name('save-new-menu')->middleware('auth');
+
+        Route::post('/save-new-disease', 'DashboardController@saveNewDisease')->name('save-new-disease')->middleware('auth');
+        Route::get('/disease-by-menu/{id}', 'DashboardController@diseaseByMenu')->name('disease-by-menu')->middleware('auth');
         // Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     });

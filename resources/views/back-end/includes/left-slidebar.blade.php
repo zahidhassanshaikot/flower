@@ -16,7 +16,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link @yield('menu')" href="{{route('menu')}}">
+                        <a class="nav-link @yield('menu-list')" href="{{route('menu')}}">
                             <i class="fa fa-fw fa-user-circle"></i>Menu List
                         </a>
                     </li>
