@@ -118,7 +118,7 @@
                                                                     <a href="{{ route('treatment-by-disease',['id'=>$disease->id]) }}">{{ $disease->name }}</a>
                                                                 </td>
                                                                 <td> @if($disease->status==1) Active @else Inactive @endif</td>
-                                                                <td> @if($disease->type==1) Garden @elseif($disease->type==1) Balconies @else Common @endif</td>
+                                                                <td> @if($disease->type==1) Garden @elseif($disease->type==2) Balconies @else Common @endif</td>
                                                                 <td>
                                                                     <div class="dropdown">
                                                                         <button class="btn bg-primary dropdown-toggle btn-select-option" type="button" data-toggle="dropdown">...

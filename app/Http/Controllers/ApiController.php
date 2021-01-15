@@ -214,7 +214,7 @@ class ApiController extends Controller
 
     }
     public function diseaseByMenu($menu_id){
-        $diseases=Disease::where('menu_id',$menu_id)->get();
+        $diseases=Disease::where('menu_id',$menu_id)->where('status',1)->get();
 
         $diseaseList=[]; 
         if(count($diseases)==0){
@@ -249,8 +249,12 @@ class ApiController extends Controller
 
         return $diseaseList;
     }
-    public function treatmentByDisease($menu_id,$disease_id){
-        $treatments=Treatment::where('disease_id',$disease_id)->get();
+    public function treatmentByDisease($menu_id,$disease_id,$type){
+        $treatments=Treatment::select('treatments.*')
+        ->join('diseases', 'diseases.id', '=', 'treatments.disease_id')
+        ->where('disease_id',$disease_id)
+        ->where('diseases.status',1)
+        ->where('type',$type)->get();
 
         $treatmentList=[]; 
         if(count($treatments)==0){
