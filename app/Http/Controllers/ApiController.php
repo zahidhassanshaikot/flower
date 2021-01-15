@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Config;
 use DB;
 use App\Models\Menu;
 use URL;
+use App\Models\Disease;
+use App\Models\Treatment;
 
 class ApiController extends Controller
 {
@@ -210,6 +212,71 @@ class ApiController extends Controller
 
         return $menuList;
 
+    }
+    public function diseaseByMenu($menu_id){
+        $diseases=Disease::where('menu_id',$menu_id)->get();
+
+        $diseaseList=[]; 
+        if(count($diseases)==0){
+            $disease['id']                          = '';
+            $disease['name']                        = '';
+            $disease['status']                      = '';
+            $disease['type']                        = '';
+            $disease['image']                       = '';
+            $disease['error']                       = true;
+
+            $diseaseList[]=$disease;
+        }else{     
+            foreach($diseases as $diseaseItem){
+           
+ 
+                $disease['id']                          = $diseaseItem->id;
+                $disease['name']                        = $diseaseItem->name;
+                $disease['status']                      = $diseaseItem->status;
+                $disease['type']                        = $diseaseItem->type;
+                
+                if($diseaseItem->image != null){
+                    $disease['image']                   = URL::to("/").'/'.$diseaseItem->image;
+                }else{
+                    $disease['image']                   = asset('default-image/default.jpg');
+                }
+                $disease['error']                       = false;
+                $diseaseList[]=$disease;
+            }
+            
+        }
+        
+
+        return $diseaseList;
+    }
+    public function treatmentByDisease($menu_id,$disease_id){
+        $treatments=Treatment::where('disease_id',$disease_id)->get();
+
+        $treatmentList=[]; 
+        if(count($treatments)==0){
+            $treatment['id']                          = '';
+            $treatment['amount']                      = '';
+            $treatment['fertilizer']                  = '';
+            $treatment['pesticides']                  = '';
+            $treatment['description']                 = '';
+            $treatment['error']                       = true;
+
+            $treatmentList[]=$treatment;
+        }else{    
+            foreach($treatments as $treatmentItem){
+           
+                $treatment['id']                          = $treatmentItem->id;
+                $treatment['amount']                      = $treatmentItem->amount;
+                $treatment['fertilizer']                  = $treatmentItem->fertilizer;
+                $treatment['pesticides']                  = $treatmentItem->pesticides;
+                $treatment['description']                 = $treatmentItem->description;
+                $treatment['error']                       = false;
+                $treatmentList[]=$treatment;
+            }
+            
+        }
+        
+        return $treatmentList;
     }
 
 }

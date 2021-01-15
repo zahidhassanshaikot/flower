@@ -25,6 +25,9 @@ Route::group(
     Route::post('login', 'ApiController@authenticate');
     Route::get('menu', 'ApiController@menuList');
 
+    Route::post('menu/disease/{id}', 'ApiController@diseaseByMenu');
+    Route::post('menu/disease/treatment/{menu_id}/{disease_id}', 'ApiController@treatmentByDisease');
+
     Route::group(['middleware' => ['jwt.verify']], function() {
 
             Route::get('me', 'ApiController@getAuthenticatedUser');
