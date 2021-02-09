@@ -25,6 +25,9 @@ Route::group(
     Route::post('login', 'ApiController@authenticate');
     Route::get('menu', 'ApiController@menuList');
 
+    Route::post('message', 'ApiController@message');
+    Route::get('view/message/{sender_id}/{receiver_id}', 'ApiController@viewMessage');
+
     Route::get('menu/disease/{id}', 'ApiController@diseaseByMenu');
     Route::get('menu/disease/treatment/{menu_id}/{disease_id}/{type}', 'ApiController@treatmentByDisease');
 

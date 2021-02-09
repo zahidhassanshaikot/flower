@@ -13,9 +13,12 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Config;
 use DB;
 use App\Models\Menu;
+use App\Models\Message;
 use URL;
 use App\Models\Disease;
 use App\Models\Treatment;
+use Image;
+use File;
 
 class ApiController extends Controller
 {
@@ -282,5 +285,96 @@ class ApiController extends Controller
         
         return $treatmentList;
     }
+
+public function message(Request $request){
+
+    $validator = Validator::make($request->all(), [
+        'sender_id' => 'required',
+        'receiver_id' => 'required',
+    ]);
+    
+   if($validator->fails()){
+       return $this->responseWithError('Invalid Credentials', $validator->errors(), 422);
+    }
+    $message= new Message();
+    $message->sender_id=$request->sender_id;
+    $message->receiver_id=$request->receiver_id;
+    $message->message=$request->message;
+
+    if ($request->file('image')) :
+        $validator = Validator::make($request->all(), [
+            'image' => 'required|mimes:jpg,JPG,JPEG,jpeg,gif,png|max:2120',
+        ]);
+
+
+        if($validator->fails()){
+            return $this->responseWithError('Invalid Credentials', $validator->errors(), 422);
+         }
+    
+            $requestImage = $request->file('image');
+            $fileType = $requestImage->getClientOriginalExtension();
+            $originalImageName = date('YmdHis') . rand(1, 50) . '.' . $fileType;
+            $directory = 'image_gallery/';
+            $originalImageUrl = $directory . $originalImageName;
+            $imgOriginal=Image::make($requestImage)->stream();
+            Image::make($requestImage)->save($originalImageUrl);
+            $message->image = $originalImageUrl;
+        endif;
+        $message->save();
+        return 'successful';
+}
+
+public function viewMessage($sender_id,$receiver_id){
+    // $messages= Message::where('sender_id',$sender_id)->orWhere('receiver_id',$sender_id)->get();
+
+    $messages= Message::
+    join('users as sender', 'sender.id', '=', 'messages.sender_id')
+    ->join('users as receiver', 'receiver.id', '=', 'messages.receiver_id')
+    ->select('messages.*', 'sender.name as sender_name', 'receiver.name as receiver_name')
+    ->where(function($q) use ($sender_id) {
+        $q->where('sender_id', $sender_id)
+          ->orWhere('receiver_id', $sender_id);
+    })->where(function ($q) use ($receiver_id) {
+        $q->where('sender_id', $receiver_id)
+          ->orWhere('receiver_id', $receiver_id);
+    })->orderBy('created_at', 'ASC')->get();
+
+    $messageList=[]; 
+    if(count($messages)==0){
+        $message['id']                          = '';
+        $message['sender_id']                   = '';
+        $message['receiver_id']                 = '';
+        $message['message']                     = '';
+        $message['image']                       = '';
+        $message['created_at']                  = '';
+        $message['sender_name']                 = '';
+        $message['receiver_name']               = '';
+        $message['error']                       = true;
+
+        $messageList[]=$message;
+    }else{     
+        foreach($messages as $messageItem){
+       
+
+            $message['id']                          = $messageItem->id;
+            $message['sender_id']                   = $messageItem->sender_id;
+            $message['receiver_id']                 = $messageItem->receiver_id;
+            $message['message']                     = $messageItem->message;
+            
+            if($messageItem->image != null){
+                $message['image']                   = URL::to("/").'/'.$messageItem->image;
+            }else{
+                $message['image']                   = null;
+            }
+            $message['created_at']                  = $messageItem->created_at;
+            $message['sender_name']                 = $messageItem->sender_name;
+            $message['receiver_name']               = $messageItem->receiver_name;
+            $message['error']                       = false;
+            $messageList[]=$message;
+        }
+        
+    }
+    return $messageList;
+}
 
 }
