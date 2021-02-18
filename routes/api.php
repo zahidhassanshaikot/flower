@@ -25,8 +25,7 @@ Route::group(
     Route::post('login', 'ApiController@authenticate');
     Route::get('menu', 'ApiController@menuList');
 
-    Route::post('message', 'ApiController@message');
-    Route::get('view/message/{sender_id}/{receiver_id}', 'ApiController@viewMessage');
+
 
     Route::get('menu/disease/{id}', 'ApiController@diseaseByMenu');
     Route::get('menu/disease/treatment/{menu_id}/{disease_id}/{type}', 'ApiController@treatmentByDisease');
@@ -37,6 +36,10 @@ Route::group(
             Route::get('logout', 'ApiController@logout');
             Route::post('change-password', 'ApiController@changePassword');
             Route::post('update/{id}', 'ApiController@updateUserInfo');
+
+            Route::post('message', 'ApiController@message');
+            Route::get('view/message/receiver/{user_id}', 'ApiController@viewMessageReceiver');
+            Route::get('view/message/{sender_id}/{receiver_id}', 'ApiController@viewMessage');
     });
 });
 

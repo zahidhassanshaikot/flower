@@ -19,6 +19,7 @@ use App\Models\Disease;
 use App\Models\Treatment;
 use Image;
 use File;
+use Artisan;
 
 class ApiController extends Controller
 {
@@ -83,7 +84,11 @@ class ApiController extends Controller
                 'password' => Hash::make($request->password),
             ]);
 
-            return $this->responseWithSuccess( 'Registration Successful',$user);
+            $user['message']='Registration Successful';
+            $user['error']='false';
+
+            return $user;
+            // return $this->responseWithSuccess( 'Registration Successful',$user);
 
     }
 
@@ -94,14 +99,18 @@ class ApiController extends Controller
                         return response()->json(['user_not_found'], 404);
                     }
 
-                } catch (Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
+                } catch (\Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
                     return response()->json(['token_expired'], $e->getStatusCode());
-                } catch (Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
+                } catch (\Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
                     return response()->json(['token_invalid'], $e->getStatusCode());
-                } catch (Tymon\JWTAuth\Exceptions\JWTException $e) {
+                } catch (\Tymon\JWTAuth\Exceptions\JWTException $e) {
                     return response()->json(['token_absent'], $e->getStatusCode());
                 }
-                return $this->responseWithSuccess('Success',$user);
+                $user['message']='Success';
+                $user['error']='false';
+
+                return $user;
+                // return $this->responseWithSuccess('Success',$user);
     }
 
     public function logout()
@@ -177,6 +186,10 @@ class ApiController extends Controller
 
 
     public function test(Request $request){
+        Artisan::call('route:cache');
+        Artisan::call('config:cache');
+        Artisan::call('cache:clear');
+        Artisan::call('view:clear');
         return 'ok';
     }
 
@@ -323,21 +336,33 @@ public function message(Request $request){
         $message->save();
         return 'successful';
 }
+public function viewMessageReceiver($user_id){
+    $users= Message::
+    join('users as sender', 'sender.id', '=', 'messages.sender_id')
+    ->join('users as receiver', 'receiver.id', '=', 'messages.receiver_id')
+    ->select('sender.name as sender_name', 'receiver.name as receiver_name')
+    ->where(function($q) use ($user_id) {
+        $q->where('sender_id', $user_id)
+        ->orWhere('receiver_id', $user_id);
+    })->distinct('receiver.name')->get();
 
+    return $users;
+}
 public function viewMessage($sender_id,$receiver_id){
+
     // $messages= Message::where('sender_id',$sender_id)->orWhere('receiver_id',$sender_id)->get();
 
     $messages= Message::
-    join('users as sender', 'sender.id', '=', 'messages.sender_id')
-    ->join('users as receiver', 'receiver.id', '=', 'messages.receiver_id')
-    ->select('messages.*', 'sender.name as sender_name', 'receiver.name as receiver_name')
-    ->where(function($q) use ($sender_id) {
-        $q->where('sender_id', $sender_id)
-          ->orWhere('receiver_id', $sender_id);
-    })->where(function ($q) use ($receiver_id) {
-        $q->where('sender_id', $receiver_id)
-          ->orWhere('receiver_id', $receiver_id);
-    })->orderBy('created_at', 'ASC')->get();
+                join('users as sender', 'sender.id', '=', 'messages.sender_id')
+                ->join('users as receiver', 'receiver.id', '=', 'messages.receiver_id')
+                ->select('messages.*', 'sender.name as sender_name', 'receiver.name as receiver_name')
+                ->where(function($q) use ($sender_id) {
+                    $q->where('sender_id', $sender_id)
+                    ->orWhere('receiver_id', $sender_id);
+                })->where(function ($q) use ($receiver_id) {
+                    $q->where('sender_id', $receiver_id)
+                    ->orWhere('receiver_id', $receiver_id);
+                })->orderBy('created_at', 'ASC')->get();
 
     $messageList=[]; 
     if(count($messages)==0){

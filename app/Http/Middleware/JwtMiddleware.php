@@ -6,6 +6,8 @@ use Closure;
 use JWTAuth;
 use Exception;
 use Tymon\JWTAuth\Http\Middleware\BaseMiddleware;
+use Tymon\JWTAuth\Contracts\JWTSubject;
+use Tymon\JWTAuth\Exceptions\JWTException;
 
 class JwtMiddleware extends BaseMiddleware
 {
@@ -18,17 +20,35 @@ class JwtMiddleware extends BaseMiddleware
      */
     public function handle($request, Closure $next)
     {
+        
         try {
-            $user = JWTAuth::parseToken()->authenticate();
-        } catch (Exception $e) {
-            if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenInvalidException){
-                return response()->json(['error' => true, 'message' => 'Token is Invalid', 'data' => ''],401);
-            }else if ($e instanceof \Tymon\JWTAuth\Exceptions\TokenExpiredException){
-                return response()->json(['error' => true, 'message' => 'Token is Expired', 'data' => ''],401);
-            }else{
-                return response()->json(['error' => true, 'message' => 'Authorization Token not found', 'data' => ''],401);
+
+            if (!$user = JWTAuth::parseToken()->authenticate()) {
+                return response()->json(['user_not_found'], 404);
             }
+        } catch (\Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
+    
+            return response()->json([
+                'error' => true, 
+                'message' => 'Token is Expired', 
+                'data' => ''],401);
+    
+        } catch (\Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
+    
+            return response()->json([
+                'error' => true, 
+                'message' => 'Token is Invalid', 
+                'data' => ''],401);
+    
+        } catch (\Tymon\JWTAuth\Exceptions\JWTException $e) {
+    
+            return response()->json([
+                'error' => true, 
+                'message' => 'Authorization Token not found', 
+                'data' => ''],401);
+    
         }
+        
         return $next($request);
         
     }
