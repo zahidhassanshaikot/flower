@@ -25,6 +25,11 @@
                             <i class="fa fa-fw fa-user-circle"></i>User List
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link @yield('message')" href="{{route('messages')}}">
+                            <i class="fa fa-fw fa-user-circle"></i>Messages
+                        </a>
+                    </li>
                 </ul>
             </div>
         </nav>

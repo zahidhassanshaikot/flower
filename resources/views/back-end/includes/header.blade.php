@@ -17,11 +17,11 @@
                 
                 <li class="nav-item dropdown nav-user">
                     <a class="nav-link nav-user-img" href="#" id="navbarDropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        @if( auth::user()->image != null)
+                        {{-- @if( auth::user()->image != null)
                         <img src="{{ asset(auth::user()->image) }}" alt="" class="user-avatar-md rounded-circle">
-                        @else 
+                        @else  --}}
                         <img src="{{ asset("assets") }}/images/avatar-1.jpg" alt="" class="user-avatar-md rounded-circle">
-                        @endif
+                        {{-- @endif --}}
                     </a>
                     <div class="dropdown-menu dropdown-menu-right nav-user-dropdown" aria-labelledby="navbarDropdownMenuLink2">
                         <div class="nav-user-info">

@@ -13,9 +13,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return redirect()->route('login');
+//     // return view('welcome');
+// });
 
 Auth::routes();
 
@@ -24,6 +25,7 @@ Route::group(
         'namespace'=>'App\Http\Controllers'
     ],
     function () {
+        Route::get('/', 'DashboardController@index')->name('dashboard')->middleware('auth');
         Route::get('/dashboard', 'DashboardController@index')->name('dashboard')->middleware('auth');
         Route::get('/menu', 'DashboardController@menu')->name('menu')->middleware('auth');
         Route::get('/status-change/{id}', 'DashboardController@statusChange')->name('status-change')->middleware('auth');
@@ -41,5 +43,9 @@ Route::group(
         Route::get('/disease-delete/{id}', 'DashboardController@diseaseDelete')->name('disease-delete')->middleware('auth');
         
         Route::get('/treatment-delete/{id}', 'DashboardController@treatmentDelete')->name('treatment-delete')->middleware('auth');
+        
+        Route::get('/messages', 'UserController@messages')->name('messages')->middleware('auth');
+        Route::get('/view/messages/{user_id}', 'UserController@ViewMessages')->name('view-message-details')->middleware('auth');
+        Route::post('/reply-message', 'UserController@ReplyMessages')->name('reply-message')->middleware('auth');
         // Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     });

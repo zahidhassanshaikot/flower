@@ -19,7 +19,12 @@ use App\Models\Disease;
 use App\Models\Treatment;
 use Image;
 use File;
+use Auth;
+use App\Http\Controllers\Redirect;
+use Session;
+
 use Artisan;
+
 
 class ApiController extends Controller
 {
@@ -39,25 +44,38 @@ class ApiController extends Controller
             }
 
             $credentials = $request->only('email', 'password');
-            
-            try {
-                if (! $token = JWTAuth::attempt($credentials)) {
-                    return $this->responseWithError('Invalid Credentials');
+            $user = User::where('email', $request->email)->first();
+
+            if (Hash::check($request->password, $user->password, [])) {
+                
+                $user['message']='Success';
+                $user['error']='false';
                 }
-            } catch (JWTException $e) {
-                return $this->responseWithError('could_not_create_token');
+                else {    
+                    $user=null; 
+                    $user['message']='Wrong Credentials';
+                    $user['error']='true';
+                }
+                return $user;
             
-            } catch (ThrottlingException $e) {
-                return $this->responseWithError("Suspicious activity has occured on your IP address and you have been denied access for another ". $e->getDelay() ." second(s)",[], 500);
-
-            } catch (NotActivatedException $e) {
-                return $this->responseWithError('You account is not active yet. Please check your mail');
+            // try {
+            //     if (! $token = JWTAuth::attempt($credentials)) {
+            //         return $this->responseWithError('Invalid Credentials');
+            //     }
+            // } catch (JWTException $e) {
+            //     return $this->responseWithError('could_not_create_token');
             
-            } catch (Exception $e) {
-                return $this->responseWithError('Something want wrong',[], 500);
-            }
+            // } catch (ThrottlingException $e) {
+            //     return $this->responseWithError("Suspicious activity has occured on your IP address and you have been denied access for another ". $e->getDelay() ." second(s)",[], 500);
 
-            return $this->responseWithSuccess('Successfully Login',$token);
+            // } catch (NotActivatedException $e) {
+            //     return $this->responseWithError('You account is not active yet. Please check your mail');
+            
+            // } catch (Exception $e) {
+            //     return $this->responseWithError('Something want wrong',[], 500);
+            // }
+
+            // return $this->responseWithSuccess('Successfully Login',$token);
     }
 
     public function register(Request $request)
@@ -334,7 +352,9 @@ public function message(Request $request){
             $message->image = $originalImageUrl;
         endif;
         $message->save();
-        return 'successful';
+
+        $data['error']='false';
+        return $message;
 }
 public function viewMessageReceiver($user_id){
     $users= Message::
