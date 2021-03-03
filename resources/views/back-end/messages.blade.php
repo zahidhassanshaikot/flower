@@ -62,12 +62,12 @@
                                                                     @foreach ($users as $user)
                                                             <tr role="row" class="odd" id="row_{{ $user->id }}">
                                                                 
-                                                                <td><a href="#">{{ $user->receiver_name }}</a> </td>
+                                                                <td><a href="#">{{ $user->sender_name }}</a> </td>
                                                                 <td> {{ $user->email }}</td>
                                                                 <td> {{ $user->message }}</td>
                                                                 <td> {{ $user->created_at }}</td>
                                                                 <td>
-                                                                    <a href="{{ route('view-message-details',['user_id'=>$user->receiver_id]) }}" class="btn btn-xs btn-primary"><i class="fas fa-reply "></i> Reply</a>
+                                                                    <a href="{{ route('view-message-details',['user_id'=>$user->sender_id]) }}" class="btn btn-xs btn-primary"><i class="fas fa-reply "></i> Reply</a>
                                                                 </td>
                                                             </tr> 
                                                         @endforeach
