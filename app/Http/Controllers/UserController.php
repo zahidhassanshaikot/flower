@@ -52,13 +52,7 @@ class UserController extends Controller
                 ->first()
             );
         }
-
-        // $users= Message::join('users as receiver', 'receiver.id', '=', 'messages.receiver_id')
-        // ->select('receiver.name as receiver_name')
-        // ->where(function($q) use ($user_id) {
-        //     $q->where('sender_id', $user_id)
-        //     ->orWhere('receiver_id', $user_id);
-        // })->distinct('receiver.name')->get();
+        // return $users;
 
         return view('back-end.messages',compact('users'));
     }
@@ -76,6 +70,12 @@ public function ViewMessages($sender_id){
                     ->orWhere('receiver_id', $receiver_id);
                 })->orderBy('created_at', 'DESC')->get();
 
+                foreach($messages as $message){
+                    $u=Message::findOrFail($message->id);
+                    $u->seen=1;
+                    $u->save();
+
+                }
                 // return $messages;
 
     return view('back-end.viewMessages',compact('messages','sender_id'));
@@ -88,8 +88,8 @@ public function ReplyMessages(Request $request){
         'receiver_id' => 'required',
     ])->validate();
     $message= new Message();
-    $message->sender_id= $request->receiver_id;
-    $message->receiver_id= Auth::id();
+    $message->sender_id=  Auth::id();
+    $message->receiver_id=$request->receiver_id;
     $message->message= $request->message;
 
     if ($request->file('image')) :

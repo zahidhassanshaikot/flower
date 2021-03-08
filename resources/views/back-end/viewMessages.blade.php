@@ -15,7 +15,7 @@
                     
                     <div class="chat-module-body">
                         @foreach ($messages as $message)
-                        @if(Auth::id()==$message->receiver_id)
+                        @if(Auth::id()==$message->sender_id)
                         <div class="media chat-item btn-rounded alert alert-primary">
                             <div class="media-body">
                                 <div class="chat-item-title">

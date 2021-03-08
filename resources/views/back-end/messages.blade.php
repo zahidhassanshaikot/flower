@@ -60,9 +60,10 @@
                                                                 </thead>
                                                                 <tbody>
                                                                     @foreach ($users as $user)
-                                                            <tr role="row" class="odd" id="row_{{ $user->id }}">
+                                                                    @if($user->sender_name != Auth::user()->name)
+                                                            <tr role="row" class="odd @if($user->seen ==  0) text-primary @endif" id="row_{{ $user->id }}">
                                                                 
-                                                                <td><a href="#">{{ $user->sender_name }}</a> </td>
+                                                                <td>{{ $user->sender_name }} </td>
                                                                 <td> {{ $user->email }}</td>
                                                                 <td> {{ $user->message }}</td>
                                                                 <td> {{ $user->created_at }}</td>
@@ -70,6 +71,7 @@
                                                                     <a href="{{ route('view-message-details',['user_id'=>$user->sender_id]) }}" class="btn btn-xs btn-primary"><i class="fas fa-reply "></i> Reply</a>
                                                                 </td>
                                                             </tr> 
+                                                            @endif
                                                         @endforeach
                                                                     
                                                                 </tbody>

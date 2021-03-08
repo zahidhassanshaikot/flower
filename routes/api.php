@@ -30,7 +30,7 @@ Route::group(
     Route::get('menu/disease/{id}', 'ApiController@diseaseByMenu');
     Route::get('menu/disease/treatment/{menu_id}/{disease_id}/{type}', 'ApiController@treatmentByDisease');
 
-    Route::group(['middleware' => ['jwt.verify']], function() {
+    // Route::group(['middleware' => ['jwt.verify']], function() {
 
             Route::get('me', 'ApiController@getAuthenticatedUser');
             Route::get('logout', 'ApiController@logout');
@@ -40,7 +40,7 @@ Route::group(
             Route::post('message', 'ApiController@message');
             Route::get('view/message/receiver/{user_id}', 'ApiController@viewMessageReceiver');
             Route::get('view/message/{sender_id}/{receiver_id}', 'ApiController@viewMessage');
-    });
+    // });
 });
 
 Route::get('test', 'App\Http\Controllers\ApiController@test');
