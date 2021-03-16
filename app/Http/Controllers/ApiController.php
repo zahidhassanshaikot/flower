@@ -34,12 +34,16 @@ class ApiController extends Controller
         // return $request;
 
             $validator = Validator::make($request->all(), [
-                'email' => 'required|max:255',
+                'email' => 'required|max:255|email:rfc,dns',
                 'password' => 'required|min:5|max:30',
             ]);
             
            if($validator->fails()){
-               return $this->responseWithError('Invalid Credentials', $validator->errors(), 422);
+            $user['message']=$validator->errors()->first();
+            $user['error']='true';
+            return $user;               
+            
+            // return $this->responseWithError('Invalid Credentials', $validator->errors(), 422);
                 // return response()->json($validator->errors(), 422);
             }
 
@@ -84,17 +88,23 @@ class ApiController extends Controller
         // return Config::get('app.locale');
             $validator = Validator::make($request->all(), [
                 'name' => 'required',
-                'email' => 'required|unique:users|max:255',
+                'email' => 'required|unique:users|max:255|email:rfc,dns',
                 // 'user_role' => 'required|min:2|max:30',
-                'password' => 'confirmed|required|min:5|max:30',
-                'password_confirmation' => 'required|min:5|max:30'
+                'password' => 'confirmed|required_with:password_confirmed|min:5|max:30',
+                // 'password_confirmation' => 'required|min:5|max:30'
             ]);
             
 
             if($validator->fails()){
                 // return $validator->getMessageBag()->all();
+                // $errors = $validator->errors();
+
+                $user['message']=$validator->errors()->first();
+                // $user['message']=$validator->getMessageBag()->all();
+                $user['error']='true';
+                return $user;  
                 
-                return $this->responseWithError('Invalid Credentials', $validator->errors(), 422);
+                // return $this->responseWithError('Invalid Credentials', $validator->errors(), 422);
             }
             $user= User::create([
                 'name' => $request->name,
